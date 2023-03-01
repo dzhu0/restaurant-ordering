@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@200&family=Smythe&display=swap">
+
+</head>
+
+<body>
+
+    <header class="disabled">
+
+        <h1 class="res-name">Daniel's Diner</h1>
+        <p class="slogan">The best burgers and pizzas in town.</p>
+
+    </header>
+
+    <div class="offer">
+        Get 10% off on orders over $50!
+    </div>
+
+    <main class="disabled">
+
+        <div id="menu" class="menu">
+            <div class="display-flex">
+                <img
+                    class="item-image"
+                    src="./images/pizza.png"
+                    alt="A picture of a pizza">
+                <div>
+                    <h1 class="item-name">Pizza</h1>
+                    <p class="ingredients">pepperoni, mushrom, mozarella</p>
+                    <p class="price">$18.00</p>
+                </div>
+                <button class="add-btn">&#43;</button>
+            </div>
+            <hr>
+            <div class="display-flex">
+                <img
+                    class="item-image"
+                    src="./images/pizza.png"
+                    alt="A picture of a pizza">
+                <div>
+                    <h1 class="item-name">Pizza</h1>
+                    <p class="ingredients">pepperoni, mushrom, mozarella</p>
+                    <p class="price">$18.00</p>
+                </div>
+                <button class="add-btn">&#43;</button>
+            </div>
+            <hr>
+            <div class="display-flex">
+                <img
+                    class="item-image"
+                    src="./images/pizza.png"
+                    alt="A picture of a pizza">
+                <div>
+                    <h1 class="item-name">Pizza</h1>
+                    <p class="ingredients">pepperoni, mushrom, mozarella</p>
+                    <p class="price">$18.00</p>
+                </div>
+                <button class="add-btn">&#43;</button>
+            </div>
+            <hr>
+        </div>
+
+        <div id="order" class="order">
+            <h1 class="order-title">Your order</h1>
+            <div class="display-flex">
+                <h1 class="item-name">Pizza</h1>
+                <button class="remove-btn">remove</button>
+                <p class="price">$18.00</p>
+            </div>
+            <div class="display-flex">
+                <h1 class="item-name">Pizza</h1>
+                <button class="remove-btn">remove</button>
+                <p class="price">$18.00</p>
+            </div>
+            <div class="display-flex">
+                <h1 class="item-name">Pizza</h1>
+                <button class="remove-btn">remove</button>
+                <p class="price">$18.00</p>
+            </div>
+            <div class="display-flex discount">
+                <h1 class="item-name">10% discount</h1>
+                <p class="price">-$5.40</p>
+            </div>
+            <hr>
+            <div class="display-flex">
+                <h1 class="order-total">Total price:</h1>
+                <p class="price">$48.60</p>
+            </div>
+            <button class="submit-btn">Complete order</button>
+        </div>
+
+        <div class="thanks">
+            Thanks, James! Your order is on its way!
+        </div>
+
+    </main>
+
+    <div class="modal">
+        <button class="close-btn">&times;</button>
+        <h1 class="modal-title">Enter card details</h1>
+        <form>
+            <label for="name">Full name:</label>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter full name"
+                required>
+            <label for="card-number">Card number:</label>
+            <input
+                type="text"
+                id="card-number"
+                name="card-number"
+                placeholder="Enter card number"
+                required>
+            <label for="cvv-number">CVV:</label>
+            <input
+                type="text"
+                id="cvv-number"
+                name="cvv-number"
+                placeholder="Enter CVV"
+                required>
+            <button class="submit-btn" type="submit">Pay</button>
+        </form>
+    </div>
+
+    <script type="module" src="index.js"></script>
+
+</body>
+
+</html>
