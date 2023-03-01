@@ -17,7 +17,7 @@
 
 <body>
 
-    <header class="disabled">
+    <header>
 
         <h1 class="res-name">Daniel's Diner</h1>
         <p class="slogan">The best burgers and pizzas in town.</p>
@@ -25,97 +25,26 @@
     </header>
 
     <div class="offer">
-        Get 10% off on orders over $50!
+        Get <span id="percent"></span>% off on orders over $<span id="price"></span>!
     </div>
 
-    <main class="disabled">
+    <main>
 
-        <div id="menu" class="menu">
-            <div class="display-flex">
-                <img
-                    class="item-image"
-                    src="./images/pizza.png"
-                    alt="A picture of a pizza">
-                <div>
-                    <h1 class="item-name">Pizza</h1>
-                    <p class="ingredients">pepperoni, mushrom, mozarella</p>
-                    <p class="price">$18.00</p>
-                </div>
-                <button class="add-btn">&#43;</button>
-            </div>
-            <hr>
-            <div class="display-flex">
-                <img
-                    class="item-image"
-                    src="./images/pizza.png"
-                    alt="A picture of a pizza">
-                <div>
-                    <h1 class="item-name">Pizza</h1>
-                    <p class="ingredients">pepperoni, mushrom, mozarella</p>
-                    <p class="price">$18.00</p>
-                </div>
-                <button class="add-btn">&#43;</button>
-            </div>
-            <hr>
-            <div class="display-flex">
-                <img
-                    class="item-image"
-                    src="./images/pizza.png"
-                    alt="A picture of a pizza">
-                <div>
-                    <h1 class="item-name">Pizza</h1>
-                    <p class="ingredients">pepperoni, mushrom, mozarella</p>
-                    <p class="price">$18.00</p>
-                </div>
-                <button class="add-btn">&#43;</button>
-            </div>
-            <hr>
-        </div>
+        <div id="menu" class="menu"></div>
 
-        <div id="order" class="order">
-            <h1 class="order-title">Your order</h1>
-            <div class="display-flex">
-                <h1 class="item-name">Pizza</h1>
-                <button class="remove-btn">remove</button>
-                <p class="price">$18.00</p>
-            </div>
-            <div class="display-flex">
-                <h1 class="item-name">Pizza</h1>
-                <button class="remove-btn">remove</button>
-                <p class="price">$18.00</p>
-            </div>
-            <div class="display-flex">
-                <h1 class="item-name">Pizza</h1>
-                <button class="remove-btn">remove</button>
-                <p class="price">$18.00</p>
-            </div>
-            <div class="display-flex discount">
-                <h1 class="item-name">10% discount</h1>
-                <p class="price">-$5.40</p>
-            </div>
-            <hr>
-            <div class="display-flex">
-                <h1 class="order-total">Total price:</h1>
-                <p class="price">$48.60</p>
-            </div>
-            <button class="submit-btn">Complete order</button>
-        </div>
-
-        <div class="thanks">
-            Thanks, James! Your order is on its way!
-        </div>
+        <div id="order" class="order"></div>
 
     </main>
 
-    <div class="modal">
-        <button class="close-btn">&times;</button>
+    <div id="modal" class="modal hidden">
+        <button id="close-modal" class="close-btn">&times;</button>
         <h1 class="modal-title">Enter card details</h1>
-        <form>
+        <form id="payment-form">
             <label for="name">Full name:</label>
             <input
                 type="text"
-                id="name"
-                name="name"
+                id="fullName"
+                name="fullName"
                 placeholder="Enter full name"
                 required>
             <label for="card-number">Card number:</label>

@@ -4,7 +4,7 @@ export const menuArray = [
         name: "Pizza",
         ingredients: ["pepperoni", "mushrom", "mozarella"],
         price: 14,
-        image: "🍕",
+        image: "./images/pizza.png",
         alt: "A picture of a pizza"
     },
     {
@@ -12,7 +12,7 @@ export const menuArray = [
         name: "Hamburger",
         ingredients: ["beef", "cheese", "lettuce"],
         price: 12,
-        image: "🍔",
+        image: "./images/hamburger.png",
         alt: "A picture of a hamburger"
     },
     {
@@ -20,7 +20,7 @@ export const menuArray = [
         name: "Beer",
         ingredients: ["grain", "hops", "yeast", "water"],
         price: 12,
-        image: "🍺",
+        image: "./images/beer.png",
         alt: "A picture of a beer"
     }
 ]
