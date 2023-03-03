@@ -7,11 +7,38 @@ const order = []
 document.getElementById('percent').innerText = offer.percent
 document.getElementById('price').innerText = offer.price
 
+paymentForm.addEventListener('keydown', (e) => {
+    if (e.target.id === 'full-name')
+        validateFullName(e)
+})
+
+paymentForm.addEventListener('keyup', (e) => {
+    if (e.key === 'Backspace' || e.key === ' ')
+        e.target.value = e.target.value.replaceAll(/ +/g, ' ')
+})
+
+paymentForm.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') return
+    
+    if (e.target.id === 'card-number')
+        validateCardNumber(e)
+    else if (e.target.id === 'cvv-number')
+        validateCvvNumber(e)
+})
+
 paymentForm.addEventListener('submit', (e) => {
     e.preventDefault()
 
+    if (document.getElementById('card-number').value.length !== 16) {
+        alert("Please, enter the correct card number.")
+        return
+    } else if (document.getElementById('cvv-number').value.length !== 3) {
+        alert("Please, enter the correct CVV number.")
+        return
+    }
+
     const paymentFormData = new FormData(paymentForm)
-    const fullName = paymentFormData.get('fullName')
+    const fullName = paymentFormData.get('full-name')
     const firstName = fullName.split(' ')[0]
 
     document.getElementById('order').classList.add('hidden')
@@ -24,15 +51,14 @@ paymentForm.addEventListener('submit', (e) => {
 })
 
 document.addEventListener('click', (e) => {
-    if (e.target.dataset.add) {
+    if (e.target.dataset.add)
         handleAddClick(e.target.dataset.add)
-    } else if (e.target.dataset.remove) {
+    else if (e.target.dataset.remove)
         handleRemoveClick(e.target.dataset.remove)
-    } else if (e.target.id === 'complete-order') {
+    else if (e.target.id === 'complete-order')
         handleCompleteOrderClick()
-    } else if (e.target.id === 'close-modal') {
+    else if (e.target.id === 'close-modal')
         handleCloseModalClick()
-    }
 })
 
 function handleAddClick(itemId) {
@@ -54,6 +80,40 @@ function handleCompleteOrderClick() {
 function handleCloseModalClick() {
     document.querySelector('main').classList.remove('disabled')
     document.getElementById('modal').classList.add('hidden')
+}
+
+function validateFullName(e) {
+    // Prevent user to enter anything other than [A-Za-z ]
+    if (!(/[A-Za-z ]/g).test(e.key))
+        e.preventDefault()
+    else if (e.key === ' ') {
+        const cursor = e.target.selectionStart
+        const value = e.target.value
+
+        // Prevent user to enter space at the start
+        if (cursor === 0)
+            e.preventDefault()
+
+        // Prevent user to enter another adjacent space
+        else if (value.charAt(cursor - 1) === ' ')
+            e.preventDefault()
+        else if (value.charAt(cursor) === ' ')
+            e.preventDefault()
+
+        // Prevent user to enter more than one space at the end
+        else if (value.endsWith(' ') && cursor === value.length)
+            e.preventDefault()
+    }
+}
+
+function validateCardNumber(e) {
+    if (!(/\d/).test(e.key) || e.target.value.length === 16)
+        e.preventDefault()
+}
+
+function validateCvvNumber(e) {
+    if (!(/\d/).test(e.key) || e.target.value.length === 3)
+        e.preventDefault()
 }
 
 function getMenuHtml() {
@@ -81,9 +141,7 @@ function getMenuHtml() {
 }
 
 function getOrderHtml() {
-    if (order.length === 0) {
-        return ""
-    }
+    if (order.length === 0) return ""
 
     let html = `<h1 class="order-title">Your order</h1>`
     let total = 0
