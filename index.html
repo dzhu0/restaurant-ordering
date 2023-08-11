@@ -1,72 +1,58 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-
+    <title>Daniel's Diner</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Restaurant ordering app">
+    <meta name="author" content="Daniel Zhu">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
-
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@200&family=Smythe&display=swap">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200&family=Smythe&display=swap">
 </head>
 
 <body>
+    <div class="container">
+        <header>
+            <h1 class="res-name">Daniel's Diner</h1>
+            <p class="slogan">The best burgers and pizzas in town.</p>
+        </header>
 
-    <header>
+        <h2 class="offer">
+            Get <span id="percent"></span>% off on orders over $<span id="price"></span>!
+        </h2>
 
-        <h1 class="res-name">Daniel's Diner</h1>
-        <p class="slogan">The best burgers and pizzas in town.</p>
+        <main>
+            <div id="menu"></div>
 
-    </header>
+            <div id="order"></div>
+        </main>
 
-    <div class="offer">
-        Get <span id="percent"></span>% off on orders over $<span id="price"></span>!
+        <dialog class="modal" id="modal">
+            <button class="btn btn-close" id="close-modal">&times;</button>
+            <h2 class="modal-title">Enter card details</h2>
+
+            <form id="payment-form">
+                <label for="full-name">Full name:</label>
+                <input type="text" id="full-name" name="full-name" placeholder="Enter full name" required>
+
+                <label for="card-number">Card number:</label>
+                <input type="text" id="card-number" name="card-number" placeholder="Enter card number" required>
+
+                <label for="cvv-number">CVV:</label>
+                <input type="text" id="cvv-number" name="cvv-number" placeholder="Enter CVV" required>
+
+                <button class="btn btn-submit">Pay</button>
+            </form>
+        </dialog>
     </div>
 
-    <main>
-
-        <div id="menu" class="menu"></div>
-
-        <div id="order" class="order"></div>
-
-    </main>
-
-    <div id="modal" class="modal hidden">
-        <button id="close-modal" class="close-btn">&times;</button>
-        <h1 class="modal-title">Enter card details</h1>
-        <form id="payment-form">
-            <label for="full-name">Full name:</label>
-            <input
-                type="text"
-                id="full-name"
-                name="full-name"
-                placeholder="Enter full name"
-                required>
-            <label for="card-number">Card number:</label>
-            <input
-                type="text"
-                id="card-number"
-                name="card-number"
-                placeholder="Enter card number"
-                required>
-            <label for="cvv-number">CVV:</label>
-            <input
-                type="text"
-                id="cvv-number"
-                name="cvv-number"
-                placeholder="Enter CVV"
-                required>
-            <button class="submit-btn" type="submit">Pay</button>
-        </form>
-    </div>
-
-    <script type="module" src="index.js"></script>
-
+    <script src="index.js" type="module"></script>
 </body>
 
 </html>
