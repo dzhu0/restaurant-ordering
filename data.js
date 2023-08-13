@@ -1,4 +1,4 @@
-export const menuArray = [
+export default [
     {
         id: 0,
         name: "Pizza",
