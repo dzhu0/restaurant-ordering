@@ -1,1 +1,1 @@
-export const offer = {percent: 10, price: 50}
+export default { percent: 10, price: 50 }
