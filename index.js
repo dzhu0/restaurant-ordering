@@ -1,85 +1,152 @@
-import { menuArray } from './data.js'
-import { offer } from './offer.js'
+import menu from './data.js'
+import offer from './offer.js'
 
-const paymentForm = document.getElementById('payment-form')
-const order = []
+const formPaymentEl = document.getElementById('form-payment')
+const modalEl = document.getElementById('modal')
+const order = {}
 
 document.getElementById('percent').innerText = offer.percent
 document.getElementById('price').innerText = offer.price
+document.getElementById('menu').innerHTML = getMenuHtml()
 
-paymentForm.addEventListener('keydown', (e) => {
+document.addEventListener('click', e => {
+    if (e.target.dataset.add)
+        addItem(e.target.dataset.add)
+    else if (e.target.dataset.remove)
+        removeItem(e.target.dataset.remove)
+    else if (e.target.id === 'order-complete')
+        modalEl.showModal()
+    else if (e.target.id === 'modal-close')
+        modalEl.close()
+})
+
+formPaymentEl.addEventListener('keydown', (e) => {
     if (e.target.id === 'full-name')
         validateFullName(e)
 })
 
-paymentForm.addEventListener('keyup', (e) => {
+formPaymentEl.addEventListener('keyup', (e) => {
     if (e.key === 'Backspace' || e.key === ' ')
         e.target.value = e.target.value.replaceAll(/ +/g, ' ')
 })
 
-paymentForm.addEventListener('keypress', (e) => {
+formPaymentEl.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') return
-    
+
     if (e.target.id === 'card-number')
         validateCardNumber(e)
     else if (e.target.id === 'cvv-number')
         validateCvvNumber(e)
 })
 
-paymentForm.addEventListener('submit', (e) => {
+formPaymentEl.addEventListener('submit', (e) => {
     e.preventDefault()
 
-    if (document.getElementById('card-number').value.length !== 16) {
-        alert("Please, enter the correct card number.")
-        return
-    } else if (document.getElementById('cvv-number').value.length !== 3) {
-        alert("Please, enter the correct CVV number.")
-        return
-    }
+    if (document.getElementById('card-number').value.length !== 16)
+        return alert("Please, enter the correct card number.")
+    else if (document.getElementById('cvv-number').value.length !== 3)
+        return alert("Please, enter the correct CVV number.")
 
-    const paymentFormData = new FormData(paymentForm)
-    const fullName = paymentFormData.get('full-name')
+    const fullName = document.getElementById('full-name').value
     const firstName = fullName.split(' ')[0]
 
-    document.getElementById('order').classList.add('hidden')
+    document.getElementById('order').innerHTML = ''
     document.querySelector('main').innerHTML += `
 <div class="thanks">
     Thanks, ${firstName}! Your order is on its way!
+</div>`
+
+    resetOrder()
+    modalEl.close()
+})
+
+function getMenuHtml() {
+    return menu.map(item => `
+    <div class="flex-row">
+        <img
+            src="${item.image}"
+            alt="${item.alt}">
+        <div>
+            <h3 class="item-name">${item.name}</h3>
+            <p class="ingredients">${item.ingredients.join(", ")}</p>
+            <p class="price">$${item.price.toFixed(2)}</p>
+        </div>
+        <button class="btn btn-add" data-add="${item.id}">+</button>
+    </div>
+    <hr class="menu-hr">`
+    ).join('')
+}
+
+function addItem(id) {
+    order[id] = order[id] ? order[id] + 1 : 1
+    renderOrder()
+}
+
+function removeItem(id) {
+    !--order[id] && delete order[id]
+    renderOrder()
+}
+
+function renderOrder() {
+    document.getElementById('order').innerHTML = getOrderHtml()
+}
+
+function getOrderHtml() {
+    if (!Object.keys(order).length) return ''
+
+    const total = getTotalPrice()
+    let orderHtml = `<h2 class="order-title">Your order</h2>`
+    let discount = 0
+    let discountHtml = ''
+
+
+    menu.forEach(item => {
+        const quantity = order[item.id]
+        if (!quantity) return
+
+        orderHtml += `
+<div class="flex-row">
+    <h3 class="item-name">${item.name} &times; ${quantity}</h3>
+    <button class="btn btn-remove" data-remove="${item.id}">remove</button>
+    <p class="price">
+        $${item.price.toFixed(2)} &times; ${quantity} =
+        $${(item.price * quantity).toFixed(2)}
+    </p>
+</div>`
+    })
+
+    if (total >= offer.price) {
+        discount = getDiscount(total)
+        discountHtml = `$${total} <span class="discount">- ${discount}</span> =`
+
+        orderHtml += `
+<div class="flex-row discount">
+    <h3 class="item-name">${offer.percent}% discount</h3>
+    <p class="price">- $${discount}</p>
+</div>`
+    }
+
+    orderHtml += `
+<hr class="order-hr">
+<div class="flex-row">
+    <h1 class="order-total">Total price:</h1>
+    <p class="price">
+        ${discountHtml} $${(total - discount).toFixed(2)}
+    </p>
 </div>
-`
-    document.getElementById('modal').classList.add('hidden')
-})
+<button class="btn btn-submit" id="order-complete">Complete order</button>`
 
-document.addEventListener('click', (e) => {
-    if (e.target.dataset.add)
-        handleAddClick(e.target.dataset.add)
-    else if (e.target.dataset.remove)
-        handleRemoveClick(e.target.dataset.remove)
-    else if (e.target.id === 'complete-order')
-        handleCompleteOrderClick()
-    else if (e.target.id === 'close-modal')
-        handleCloseModalClick()
-})
-
-function handleAddClick(itemId) {
-    order.push(parseInt(itemId))
-    renderOrder()
+    return orderHtml
 }
 
-function handleRemoveClick(itemId) {
-    const index = order.indexOf(parseInt(itemId))
-    order.splice(index, 1)
-    renderOrder()
+function getTotalPrice() {
+    return menu.reduce((total, item) => {
+        return (order[item.id] || 0) * item.price + total
+    }, 0).toFixed(2)
 }
 
-function handleCompleteOrderClick() {
-    document.querySelector('main').classList.add('disabled')
-    document.getElementById('modal').classList.remove('hidden')
-}
-
-function handleCloseModalClick() {
-    document.querySelector('main').classList.remove('disabled')
-    document.getElementById('modal').classList.add('hidden')
+function getDiscount(total) {
+    return (total * offer.percent / 100).toFixed(2)
 }
 
 function validateFullName(e) {
@@ -116,113 +183,6 @@ function validateCvvNumber(e) {
         e.preventDefault()
 }
 
-function getMenuHtml() {
-    let html = ''
-
-    menuArray.forEach((item) => {
-        html += `
-<div class="display-flex">
-    <img
-        class="item-image"
-        src="${item.image}"
-        alt="${item.alt}">
-    <div>
-        <h1 class="item-name">${item.name}</h1>
-        <p class="ingredients">${item.ingredients.join(", ")}</p>
-        <p class="price">$${item.price.toFixed(2)}</p>
-    </div>
-    <button class="add-btn" data-add="${item.id}">+</button>
-</div>
-<hr></hr>
-`
-    })
-
-    return html
+function resetOrder() {
+    for (const id in order) delete order[id]
 }
-
-function getOrderHtml() {
-    if (order.length === 0) return ""
-
-    let html = `<h1 class="order-title">Your order</h1>`
-    let total = 0
-    let discount = 0
-    let discountHtml = ""
-
-
-    menuArray.forEach((item) => {
-        let quantity = 0
-
-        for (let id of order) {
-            if (id === item.id) {
-                quantity++
-            }
-        }
-
-        if (quantity > 0) {
-            html += `
-<div class="display-flex">
-    <h1 class="item-name">${item.name} &times; ${quantity}</h1>
-    <button class="remove-btn" data-remove="${item.id}">remove</button>
-    <p class="price">
-        $${item.price.toFixed(2)} &times; ${quantity} =
-        $${(item.price * quantity).toFixed(2)}
-    </p>
-</div>
-`
-        }
-    })
-
-    total = getTotalPrice()
-
-    if (total >= offer.price) {
-        discount = getDiscount()
-        discountHtml = `$${total} <span class="discount">- ${discount}</span> =`
-
-        html += `
-<div class="display-flex discount">
-    <h1 class="item-name">${offer.percent}% discount</h1>
-    <p class="price">- $${discount}</p>
-</div>
-`
-    }
-
-    html += `
-<hr>
-<div class="display-flex">
-    <h1 class="order-total">Total price:</h1>
-    <p class="price">
-        ${discountHtml} $${(total - discount).toFixed(2)}
-    </p>
-</div>
-<button id="complete-order" class="submit-btn">Complete order</button>
-`
-
-    return html
-}
-
-function getTotalPrice() {
-    let total = 0
-
-    order.forEach((id) => {
-        const targetItemObj = menuArray.filter(function (item) {
-            return item.id === id
-        })[0]
-        total += targetItemObj.price
-    })
-
-    return total.toFixed(2)
-}
-
-function getDiscount() {
-    return (getTotalPrice() * offer.percent / 100).toFixed(2)
-}
-
-function renderMenu() {
-    document.getElementById('menu').innerHTML = getMenuHtml()
-}
-
-function renderOrder() {
-    document.getElementById('order').innerHTML = getOrderHtml()
-}
-
-renderMenu()
