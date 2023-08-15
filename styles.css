@@ -142,6 +142,7 @@ main {
 }
 
 .thanks {
+    display: none;
     background-color: #ECFDF5;
     font-size: 2rem;
     font-weight: 400;
