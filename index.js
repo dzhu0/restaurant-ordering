@@ -3,6 +3,8 @@ import offer from './offer.js'
 
 const formPaymentEl = document.getElementById('form-payment')
 const modalEl = document.getElementById('modal')
+const orderEl = document.getElementById('order')
+const thanksEl = document.getElementById('thanks')
 const order = {}
 
 document.getElementById('percent').innerText = offer.percent
@@ -10,53 +12,63 @@ document.getElementById('price').innerText = offer.price
 document.getElementById('menu').innerHTML = getMenuHtml()
 
 document.addEventListener('click', e => {
-    if (e.target.dataset.add)
-        addItem(e.target.dataset.add)
-    else if (e.target.dataset.remove)
-        removeItem(e.target.dataset.remove)
-    else if (e.target.id === 'order-complete')
+    const { dataset, id } = e.target
+    if (dataset.add)
+        addItem(dataset.add)
+    else if (dataset.remove)
+        removeItem(dataset.remove)
+    else if (id === 'order-complete')
         modalEl.showModal()
-    else if (e.target.id === 'modal-close')
+    else if (id === 'modal-close')
         modalEl.close()
 })
 
-formPaymentEl.addEventListener('keydown', (e) => {
-    if (e.target.id === 'full-name')
+formPaymentEl.addEventListener('keydown', e => {
+    const { id } = e.target
+    if (!(/[A-Za-z0-9 ]/).test(e.key))
+        e.preventDefault()
+    else if (!(/^[A-Za-z0-9 ]$/).test(e.key))
+        return
+    else if (id === 'full-name')
         validateFullName(e)
-})
-
-formPaymentEl.addEventListener('keyup', (e) => {
-    if (e.key === 'Backspace' || e.key === ' ')
-        e.target.value = e.target.value.replaceAll(/ +/g, ' ')
-})
-
-formPaymentEl.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') return
-
-    if (e.target.id === 'card-number')
+    else if (id === 'card-number')
         validateCardNumber(e)
-    else if (e.target.id === 'cvv-number')
+    else if (id === 'cvv-number')
         validateCvvNumber(e)
 })
 
-formPaymentEl.addEventListener('submit', (e) => {
+formPaymentEl.addEventListener('keyup', e => {
+    if (e.target.id === 'full-name') {
+        const caret = e.target.selectionEnd
+        const valueTrim = e.target.value.trimStart()
+        e.target.value = valueTrim.replaceAll(/ +/g, ' ')
+        e.target.selectionEnd = caret
+    }
+})
+
+formPaymentEl.addEventListener('submit', e => {
     e.preventDefault()
 
-    if (document.getElementById('card-number').value.length !== 16)
+    const cardNumberEl = document.getElementById('card-number')
+    const cvvNumberEl = document.getElementById('cvv-number')
+
+    if (cardNumberEl.value.length !== 16) {
+        cardNumberEl.focus()
         return alert("Please, enter the correct card number.")
-    else if (document.getElementById('cvv-number').value.length !== 3)
+    } else if (cvvNumberEl.value.length !== 3) {
+        cvvNumberEl.focus()
         return alert("Please, enter the correct CVV number.")
+    }
 
     const fullName = document.getElementById('full-name').value
-    const firstName = fullName.split(' ')[0]
+    const [firstName] = fullName.split(' ')
 
-    document.getElementById('order').innerHTML = ''
-    document.querySelector('main').innerHTML += `
-<div class="thanks">
-    Thanks, ${firstName}! Your order is on its way!
-</div>`
+    orderEl.innerHTML = ''
+    thanksEl.textContent = `Thanks, ${firstName}! Your order is on its way!`
+    thanksEl.style.display = 'block'
 
     resetOrder()
+    formPaymentEl.reset()
     modalEl.close()
 })
 
@@ -88,7 +100,8 @@ function removeItem(id) {
 }
 
 function renderOrder() {
-    document.getElementById('order').innerHTML = getOrderHtml()
+    thanksEl.style.display = 'none'
+    orderEl.innerHTML = getOrderHtml()
 }
 
 function getOrderHtml() {
@@ -150,25 +163,17 @@ function getDiscount(total) {
 }
 
 function validateFullName(e) {
-    // Prevent user to enter anything other than [A-Za-z ]
-    if (!(/[A-Za-z ]/g).test(e.key))
+    if (!(/[A-Za-z ]/).test(e.key))
         e.preventDefault()
     else if (e.key === ' ') {
-        const cursor = e.target.selectionStart
+        const caret = e.target.selectionStart
         const value = e.target.value
 
-        // Prevent user to enter space at the start
-        if (cursor === 0)
+        if (caret === 0)
             e.preventDefault()
-
-        // Prevent user to enter another adjacent space
-        else if (value.charAt(cursor - 1) === ' ')
+        else if (value.charAt(caret) === ' ')
             e.preventDefault()
-        else if (value.charAt(cursor) === ' ')
-            e.preventDefault()
-
-        // Prevent user to enter more than one space at the end
-        else if (value.endsWith(' ') && cursor === value.length)
+        else if (value.charAt(caret - 1) === ' ')
             e.preventDefault()
     }
 }
